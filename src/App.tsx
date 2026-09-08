@@ -14,6 +14,7 @@ import { VoiceSearchModal } from './components/customer/VoiceSearchModal';
 import { PharmacyDetailModal } from './components/customer/PharmacyDetailModal';
 import { PharmacyDashboard } from './components/pharmacy/PharmacyDashboard';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { BottomEssentialBar } from './components/common/BottomEssentialBar';
 import { Medicine, Pharmacy, OrderRequest } from './types';
 
 const AppContent: React.FC = () => {
@@ -103,8 +104,8 @@ const AppContent: React.FC = () => {
       {/* Universal Header with Role Switcher & Notifications */}
       <Header onOpenProfile={() => setShowProfileModal(true)} />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+      {/* Main Content Area with bottom padding for essential bar */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 pb-24 sm:pb-28">
         
         {/* ROLE 1: CUSTOMER VIEW */}
         {role === 'customer' && (
@@ -237,7 +238,7 @@ const AppContent: React.FC = () => {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-4 mt-8">
+      <footer className="border-t border-slate-200 bg-white py-4 mt-8 mb-16 sm:mb-14">
         <div className="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
             MediCore GenericMed • Nashik Pilot Cluster • CDSCO Bioequivalence & Drug Price Control Order (DPCO) Compliant
@@ -247,6 +248,27 @@ const AppContent: React.FC = () => {
           </span>
         </div>
       </footer>
+
+      {/* Docked Essential Things Bar at Bottom */}
+      <BottomEssentialBar
+        onSelectHome={() => {
+          setSelectedMedicine(null);
+          setActiveTab('home');
+        }}
+        onOpenOcr={() => setShowOcrModal(true)}
+        onOpenVoice={() => setShowVoiceModal(true)}
+        onOpenTracking={() => {
+          setActiveTab('tracking');
+        }}
+        onOpenProfile={() => setShowProfileModal(true)}
+        onSelectPharmacy={(pharmacy) => handleViewPharmacyDetail(pharmacy)}
+        onViewPharmaciesList={() => {
+          if (!selectedMedicine && medicines.length > 0) {
+            setSelectedMedicine(medicines[0]);
+          }
+          setActiveTab('search');
+        }}
+      />
 
     </div>
   );
