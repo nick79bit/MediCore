@@ -1,0 +1,6 @@
+{
+  "name": "MediCore GenericMed",
+  "description": "Connected healthcare platform for AI generic medicine matching, bioequivalent price comparison, verified pharmacy discovery, order fulfilment, and platform governance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
