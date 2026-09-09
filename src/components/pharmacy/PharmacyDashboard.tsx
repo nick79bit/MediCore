@@ -96,157 +96,102 @@ export const PharmacyDashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 animate-fade-in">
       
       {/* Pharmacy Operational Header Card */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
+      <div className="rounded-2xl p-5 border overflow-hidden relative"
+        style={{ background: 'linear-gradient(135deg, #f0fdfb 0%, #ffffff 60%, #f0f9ff 100%)', borderColor: 'rgba(13,148,136,0.2)', boxShadow: 'var(--shadow-card)' }}
+      >
+        <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none opacity-5 -mr-12 -mt-12"
+          style={{ background: 'radial-gradient(circle, #0d9488, transparent)' }} />
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-teal-800 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-              <Store className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md"
+              style={{ background: 'linear-gradient(135deg, #0f766e, #0d9488)' }}>
+              <Store className="w-6 h-6 text-white" />
             </div>
-
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+                <h1 className="text-xl font-display font-800 text-slate-900 tracking-tight">
                   {currentPharmacy.name}
                 </h1>
-                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  Form 20/21 Verified Node
+                <span className="badge badge-success text-[10px]">
+                  <ShieldCheck className="w-3 h-3" /> Form 20/21 Verified
                 </span>
-                <span className="text-[11px] font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
-                  POS Live: Synced 3m ago
+                <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-lg border border-emerald-200 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  POS Synced 3m ago
                 </span>
               </div>
-
-              <p className="text-xs text-slate-600 mt-1">
-                Pharmacist in-charge: <strong className="text-slate-800">{currentPharmacy.mspcPharmacistName}</strong> ({currentPharmacy.mspcRegistrationNumber})
+              <p className="text-xs text-slate-500 mt-1">
+                Pharmacist: <strong className="text-slate-800">{currentPharmacy.mspcPharmacistName}</strong>
+                <span className="ml-2 text-slate-400">({currentPharmacy.mspcRegistrationNumber})</span>
               </p>
             </div>
           </div>
 
-          {/* Quick Action */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowAddMedModal(true)}
-              className="bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition-all flex items-center gap-1.5"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Add Medicine to Stock</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setShowAddMedModal(true)}
+            className="btn btn-primary text-xs px-4 py-2 shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Add Medicine to Stock
+          </button>
         </div>
 
-        {/* Operational KPI Counters */}
-        <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-100 text-xs">
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-            <div className="flex items-center justify-between text-slate-500">
-              <span>Incoming Requests</span>
-              <Clock className="w-3.5 h-3.5 text-amber-500" />
+        {/* KPI Cards */}
+        <div className="mt-5 pt-4 border-t border-slate-100/80 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: 'Incoming Requests', value: pendingRequestsCount, sub: 'SLA Target < 8 min', icon: Clock, valueColor: '#d97706', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)' },
+            { label: 'Trays Ready', value: readyPickupCount, sub: 'Awaiting OTP', icon: Package, valueColor: '#0d9488', bg: 'rgba(13,148,136,0.08)', border: 'rgba(13,148,136,0.2)' },
+            { label: 'Dispensed Today', value: totalDispensedCount, sub: '100% Salt Verified', icon: CheckCircle2, valueColor: '#059669', bg: 'rgba(5,150,105,0.08)', border: 'rgba(5,150,105,0.2)' },
+            { label: 'Cold Storage', value: `${currentPharmacy.coldChainTempCelsius}°C`, sub: 'Safe (2°C–8°C)', icon: Thermometer, valueColor: '#0891b2', bg: 'rgba(8,145,178,0.08)', border: 'rgba(8,145,178,0.2)' },
+          ].map((kpi) => (
+            <div key={kpi.label} className="rounded-xl p-3 border"
+              style={{ background: kpi.bg, borderColor: kpi.border }}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold text-slate-500">{kpi.label}</span>
+                <kpi.icon className="w-3.5 h-3.5" style={{ color: kpi.valueColor }} />
+              </div>
+              <p className="text-2xl font-display font-800" style={{ color: kpi.valueColor }}>{kpi.value}</p>
+              <p className="text-[10px] font-semibold mt-0.5" style={{ color: kpi.valueColor, opacity: 0.8 }}>{kpi.sub}</p>
             </div>
-            <p className="text-2xl font-bold text-slate-900 mt-1">{pendingRequestsCount}</p>
-            <span className="text-[10px] text-amber-700 font-semibold">SLA Target &lt;8 Mins</span>
-          </div>
-
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-            <div className="flex items-center justify-between text-slate-500">
-              <span>Counter Trays Ready</span>
-              <Package className="w-3.5 h-3.5 text-teal-600" />
-            </div>
-            <p className="text-2xl font-bold text-teal-800 mt-1">{readyPickupCount}</p>
-            <span className="text-[10px] text-slate-500">Awaiting Customer OTP</span>
-          </div>
-
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-            <div className="flex items-center justify-between text-slate-500">
-              <span>Dispensed Today</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            </div>
-            <p className="text-2xl font-bold text-emerald-700 mt-1">{totalDispensedCount}</p>
-            <span className="text-[10px] text-emerald-800">100% Salt Verified</span>
-          </div>
-
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-            <div className="flex items-center justify-between text-slate-500">
-              <span>Cold Storage IoT</span>
-              <Thermometer className="w-3.5 h-3.5 text-teal-600" />
-            </div>
-            <p className="text-2xl font-bold text-slate-900 mt-1">{currentPharmacy.coldChainTempCelsius}°C</p>
-            <span className="text-[10px] text-emerald-600 font-semibold">Safe (2°C - 8°C)</span>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Pharmacy Navigation Tabs */}
-      <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 text-xs font-semibold overflow-x-auto">
-        <button
-          onClick={() => setActiveTab('requests')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'requests'
-              ? 'bg-teal-700 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Clock className="w-3.5 h-3.5" />
-          <span>Customer Requests & Fulfillment</span>
-          {pendingRequestsCount > 0 && (
-            <span className="w-4 h-4 rounded-full bg-amber-400 text-amber-950 font-extrabold text-[10px] flex items-center justify-center">
-              {pendingRequestsCount}
-            </span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab('inventory')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'inventory'
-              ? 'bg-teal-700 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Package className="w-3.5 h-3.5" />
-          <span>POS Inventory & Form 20/21</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-200 text-slate-700">
-            {currentInventory.length}
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('compliance')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'compliance'
-              ? 'bg-teal-700 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Verification & Cold-Chain</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('analytics')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'analytics'
-              ? 'bg-teal-700 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <TrendingUp className="w-3.5 h-3.5" />
-          <span>Generic Substitution Analytics</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('staff')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'staff'
-              ? 'bg-teal-700 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Users className="w-3.5 h-3.5" />
-          <span>Staff & Pharmacists</span>
-        </button>
+      {/* Tab Navigation */}
+      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+        {([
+          { id: 'requests',   label: 'Order Requests', icon: Clock,      badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
+          { id: 'inventory',  label: 'POS Inventory',  icon: Package,    badge: currentInventory.length },
+          { id: 'compliance', label: 'Compliance',     icon: ShieldCheck, badge: null },
+          { id: 'analytics',  label: 'Analytics',      icon: TrendingUp, badge: null },
+          { id: 'staff',      label: 'Staff',          icon: Users,      badge: currentStaff.length },
+        ] as const).map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+              activeTab === tab.id ? 'text-white shadow-md' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+            style={activeTab === tab.id ? {
+              background: 'linear-gradient(135deg, #0d9488, #0891b2)',
+              boxShadow: '0 2px 8px -2px rgba(13,148,136,0.4)',
+            } : {}}
+          >
+            <tab.icon className="w-3.5 h-3.5 shrink-0" />
+            <span>{tab.label}</span>
+            {tab.badge !== null && (
+              <span className={`min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center ${
+                activeTab === tab.id ? 'bg-white/25 text-white' : 'bg-amber-400 text-amber-950'
+              }`}>
+                {tab.badge}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       {/* TAB 1: CUSTOMER REQUESTS & FULFILLMENT */}
@@ -342,7 +287,7 @@ export const PharmacyDashboard: React.FC = () => {
                         {order.prescriptionUploaded ? (
                           <span className="text-teal-800 font-semibold inline-flex items-center gap-1">
                             <FileText className="w-3.5 h-3.5 text-teal-600" />
-                            {order.prescriptionOcrText || 'Valid Doctor Rx Attached'}
+                            {order.prescriptionOcrExtractedText || 'Valid Doctor Rx Attached'}
                           </span>
                         ) : (
                           <span className="text-slate-500">OTC / Counter Verification</span>
@@ -381,7 +326,7 @@ export const PharmacyDashboard: React.FC = () => {
                         {isBroadcasted && (
                           <button
                             id={`accept-order-btn-${order.id}`}
-                            onClick={() => pharmacyAcceptOrder(order.id)}
+                            onClick={() => pharmacyAcceptOrder(order.id, 'Tray #B-12')}
                             className="bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-xs transition-all"
                           >
                             Accept & Verify Prescription
@@ -508,7 +453,7 @@ export const PharmacyDashboard: React.FC = () => {
                       <td className="p-3.5 text-right">
                         <div className="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
                           <button
-                            onClick={() => updateInventoryStock(item.id, Math.max(0, item.stockQuantity - 1))}
+                            onClick={() => updateInventoryStock(item.id, Math.max(0, item.stockQuantity - 1), item.sellingPrice)}
                             className="w-6 h-6 rounded bg-white font-bold text-slate-700 hover:bg-slate-200 flex items-center justify-center shadow-xs"
                             title="Decrease Stock"
                           >
@@ -516,7 +461,7 @@ export const PharmacyDashboard: React.FC = () => {
                           </button>
                           <span className="font-mono font-bold w-6 text-center">{item.stockQuantity}</span>
                           <button
-                            onClick={() => updateInventoryStock(item.id, item.stockQuantity + 5)}
+                            onClick={() => updateInventoryStock(item.id, item.stockQuantity + 5, item.sellingPrice)}
                             className="w-6 h-6 rounded bg-white font-bold text-slate-700 hover:bg-slate-200 flex items-center justify-center shadow-xs"
                             title="Add 5 Packs"
                           >

@@ -84,20 +84,20 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
   const currentStageIndex = getStageIndex(order.status);
 
   return (
-    <div className="space-y-5 max-w-2xl mx-auto">
+    <div className="space-y-5 max-w-2xl mx-auto animate-fade-in">
       
       {/* Top Bar with Back Button */}
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-xl transition-all hover:shadow-sm"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Search</span>
         </button>
 
-        <span className="text-xs font-mono font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
-          Tracking {order.id}
+        <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+          #{order.id}
         </span>
       </div>
 
@@ -118,26 +118,34 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
       </div>
 
       {/* Live Pickup Pass Card */}
-      <div className="bg-white rounded-2xl border-2 border-teal-600 shadow-md p-5 relative overflow-hidden">
+      <div className="rounded-2xl p-5 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #f0fdfb 0%, #ffffff 60%, #f0f9ff 100%)', border: '2px solid rgba(13,148,136,0.4)', boxShadow: '0 8px 32px -8px rgba(13,148,136,0.2)' }}
+      >
         
         {/* Status Badge & SLA Countdown */}
-        <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+        <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100/60">
           <div className="flex items-center gap-2">
-            <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-              order.status === 'Dispensed'
-                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                : order.status === 'Ready for Pickup'
-                  ? 'bg-teal-100 text-teal-800 border border-teal-300 animate-pulse'
-                  : 'bg-amber-100 text-amber-800 border border-amber-300'
-            }`}>
-              ● {order.status.toUpperCase()}
+            <span
+              className={`status-pill text-[11px] font-bold ${
+                order.status === 'Dispensed'
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                  : order.status === 'Ready for Pickup'
+                    ? 'bg-teal-100 text-teal-800 border border-teal-200'
+                    : 'bg-amber-100 text-amber-800 border border-amber-200'
+              }`}
+            >
+              <span className={`status-dot ${
+                order.status === 'Dispensed' ? 'bg-emerald-500' :
+                order.status === 'Ready for Pickup' ? 'bg-teal-500 animate-ping' : 'bg-amber-500'
+              }`} />
+              {order.status.toUpperCase()}
             </span>
           </div>
 
           {order.status !== 'Dispensed' && (
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
-              <span>Holding: {formatTimer(timeLeftSeconds)}</span>
+            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
+              <Clock className="w-3.5 h-3.5 text-amber-500 animate-spin-slow" />
+              <span>Hold: {formatTimer(timeLeftSeconds)}</span>
             </div>
           )}
         </div>
@@ -226,39 +234,53 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
           Real-Time Fulfillment Timeline
         </h3>
 
-        <div className="relative pl-6 space-y-5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+        <div className="relative pl-7 space-y-5">
+          {/* Vertical connector line */}
+          <div className="absolute left-[10px] top-4 bottom-4 w-0.5" style={{ background: 'linear-gradient(180deg, #0d9488 0%, #e2e8f0 100%)' }} />
+
           {stages.map((stage, idx) => {
             const isCompleted = idx <= currentStageIndex;
             const isCurrent = idx === currentStageIndex;
 
             return (
-              <div key={stage.key} className="relative text-xs">
+              <div key={stage.key} className="relative">
                 {/* Status Dot */}
-                <div 
-                  className={`absolute -left-6 top-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                <div
+                  className={`absolute -left-7 top-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
                     isCompleted
-                      ? 'bg-teal-600 text-white shadow-xs'
-                      : 'bg-white border-2 border-slate-300 text-slate-400'
+                      ? 'text-white shadow-md'
+                      : 'bg-white border-2 border-slate-200 text-slate-400'
                   }`}
+                  style={isCompleted ? { background: 'linear-gradient(135deg, #0d9488, #0891b2)', boxShadow: '0 2px 8px -2px rgba(13,148,136,0.5)' } : {}}
                 >
-                  {isCompleted ? '✓' : idx + 1}
+                  {isCurrent ? (
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  ) : isCompleted ? (
+                    <Check className="w-3 h-3" />
+                  ) : (
+                    <span className="text-[10px]">{idx + 1}</span>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <p className={`font-bold text-sm ${isCurrent ? 'text-teal-900' : isCompleted ? 'text-slate-800' : 'text-slate-400'}`}>
-                    {stage.label}
-                  </p>
-                  
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className={`font-display font-700 text-sm ${
+                      isCurrent ? 'text-teal-800' : isCompleted ? 'text-slate-800' : 'text-slate-400'
+                    }`}>
+                      {stage.label}
+                    </p>
+                    <p className={`text-xs mt-0.5 ${
+                      isCompleted ? 'text-slate-500' : 'text-slate-400'
+                    }`}>
+                      {order.statusTimeline[idx]?.note || stage.desc}
+                    </p>
+                  </div>
                   {order.statusTimeline[idx] && (
-                    <span className="text-[10px] font-mono text-slate-400">
+                    <span className="text-[10px] font-mono text-slate-400 shrink-0 mt-0.5 bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded">
                       {order.statusTimeline[idx].timestamp}
                     </span>
                   )}
                 </div>
-
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {order.statusTimeline[idx]?.note || stage.desc}
-                </p>
               </div>
             );
           })}

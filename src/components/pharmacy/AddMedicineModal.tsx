@@ -8,7 +8,7 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Medicine } from '../../types';
+import { Medicine, DosageForm, PharmacyInventoryItem } from '../../types';
 
 interface AddMedicineModalProps {
   pharmacyId: string;
@@ -19,12 +19,12 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
   pharmacyId,
   onClose
 }) => {
-  const { addInventoryItem, medicines } = useApp();
+  const { addInventoryItem, addNewMedicine } = useApp();
 
   const [brandName, setBrandName] = useState('');
   const [activeSalt, setActiveSalt] = useState('');
   const [strength, setStrength] = useState('');
-  const [dosageForm, setDosageForm] = useState('Tablet');
+  const [dosageForm, setDosageForm] = useState<DosageForm>('Tablet');
   const [manufacturer, setManufacturer] = useState('');
   const [mrp, setMrp] = useState<number>(50);
   const [sellingPrice, setSellingPrice] = useState<number>(45);
@@ -71,7 +71,21 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
       commonUses: ['General therapeutic use']
     };
 
-    addInventoryItem(pharmacyId, newMed, Number(stockQuantity), Number(sellingPrice), batchNumber, expiryDate);
+    const newInvItem: Omit<PharmacyInventoryItem, 'id' | 'lastUpdated'> = {
+      pharmacyId,
+      medicineId: newMed.id,
+      medicine: newMed,
+      stockQuantity: Number(stockQuantity),
+      batchNumber,
+      expiryDate,
+      sellingPrice: Number(sellingPrice),
+      discountPercent: Math.round(((mrp - sellingPrice) / mrp) * 100),
+      status: Number(stockQuantity) > 5 ? 'In Stock' : Number(stockQuantity) > 0 ? 'Low Stock' : 'Out of Stock',
+      isGenericRecommended: newMed.isGeneric
+    };
+
+    if (addNewMedicine) addNewMedicine(newMed);
+    addInventoryItem(newInvItem);
     onClose();
   };
 
@@ -161,7 +175,7 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
               <label className="block font-semibold text-slate-700 mb-1">Dosage Form</label>
               <select
                 value={dosageForm}
-                onChange={(e) => setDosageForm(e.target.value)}
+                onChange={(e) => setDosageForm(e.target.value as DosageForm)}
                 className="w-full bg-white border border-slate-300 rounded-xl p-2 text-xs text-slate-800"
               >
                 <option value="Tablet">Tablet</option>

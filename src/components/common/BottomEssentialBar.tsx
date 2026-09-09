@@ -78,8 +78,8 @@ export const BottomEssentialBar: React.FC<BottomEssentialBarProps> = ({
 
   // Admin metrics
   const pendingVerificationsCount = (verificationApps || []).filter(a => 
-    a?.status === 'Under Review' || 
-    a?.status === 'Inspection Scheduled'
+    a?.status === 'Pending Review' || 
+    a?.status === 'Requires Clarification'
   ).length;
 
   const allFeedbacks = feedbackList || feedbacks || [];
@@ -91,7 +91,14 @@ export const BottomEssentialBar: React.FC<BottomEssentialBarProps> = ({
       <nav 
         id="bottom-essential-bar"
         aria-label="Essential Actions Toolbar"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_24px_rgba(15,23,42,0.08)] print:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 print:hidden"
+        style={{
+          background: 'rgba(255,255,255,0.94)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          borderTop: '1px solid rgba(226,232,240,0.8)',
+          boxShadow: '0 -4px 24px rgba(15,23,42,0.08)',
+        }}
       >
         <div className="max-w-5xl mx-auto px-2 sm:px-4 py-1.5 sm:py-2">
           
@@ -103,14 +110,15 @@ export const BottomEssentialBar: React.FC<BottomEssentialBarProps> = ({
               <button
                 id="bottom-nav-home"
                 onClick={onSelectHome}
-                className={`flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl text-xs font-semibold transition-all min-h-[44px] ${
+                className={`flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl text-xs font-semibold transition-all min-h-[44px] relative ${
                   activeTab === 'home'
-                    ? 'text-teal-700 bg-teal-50/80 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                    ? 'text-white'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100/70'
                 }`}
+                style={activeTab === 'home' ? { background: 'linear-gradient(135deg, #0d9488, #0891b2)', boxShadow: '0 2px 12px -4px rgba(13,148,136,0.5)' } : {}}
               >
-                <Home className={`w-4 h-4 sm:w-5 sm:h-5 ${activeTab === 'home' ? 'text-teal-600' : 'text-slate-500'}`} />
-                <span className="text-[11px] sm:text-xs mt-0.5 whitespace-nowrap">Home</span>
+                <Home className={`w-4 h-4 sm:w-5 sm:h-5 ${activeTab === 'home' ? 'text-white' : 'text-slate-400'}`} />
+                <span className="text-[10px] sm:text-xs mt-0.5 whitespace-nowrap">Home</span>
               </button>
 
               {/* Scan Rx (Prescription OCR) - High Priority Quick Tool */}
@@ -150,9 +158,10 @@ export const BottomEssentialBar: React.FC<BottomEssentialBarProps> = ({
                 }}
                 className={`flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-xl text-xs font-semibold transition-all min-h-[44px] relative ${
                   activeTab === 'tracking'
-                    ? 'text-teal-700 bg-teal-50/80 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                    ? 'text-white'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100/70'
                 }`}
+                style={activeTab === 'tracking' ? { background: 'linear-gradient(135deg, #0d9488, #0891b2)', boxShadow: '0 2px 12px -4px rgba(13,148,136,0.5)' } : {}}
               >
                 <div className="relative">
                   <PackageCheck className={`w-4 h-4 sm:w-5 sm:h-5 ${activeTab === 'tracking' ? 'text-teal-600' : 'text-slate-500'}`} />

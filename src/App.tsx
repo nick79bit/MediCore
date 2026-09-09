@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import { LandingPage } from './components/common/LandingPage';
 import { Header } from './components/common/Header';
 import { CustomerHome } from './components/customer/CustomerHome';
 import { MedicineSearchResults } from './components/customer/MedicineSearchResults';
@@ -15,11 +16,12 @@ import { PharmacyDetailModal } from './components/customer/PharmacyDetailModal';
 import { PharmacyDashboard } from './components/pharmacy/PharmacyDashboard';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { BottomEssentialBar } from './components/common/BottomEssentialBar';
-import { Medicine, Pharmacy, OrderRequest } from './types';
+import { Medicine, Pharmacy, OrderRequest, UserRole } from './types';
 
 const AppContent: React.FC = () => {
   const { 
-    role, 
+    role,
+    setRole,
     activeTab, 
     setActiveTab, 
     trackingOrderId, 
@@ -28,6 +30,17 @@ const AppContent: React.FC = () => {
     setSearchQuery,
     findGenericMatches
   } = useApp();
+
+  const [showLanding, setShowLanding] = useState<boolean>(true);
+
+  const handleLandingEnter = (selectedRole: UserRole) => {
+    setRole(selectedRole);
+    setShowLanding(false);
+  };
+
+  if (showLanding) {
+    return <LandingPage onEnter={handleLandingEnter} />;
+  }
 
   // Selected medicine for results view
   const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);

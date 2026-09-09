@@ -44,7 +44,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Metrics
   const verifiedPharmaciesCount = (pharmacies || []).filter(p => p?.verifiedBadge).length;
-  const pendingVerificationsCount = (verificationApps || []).filter(a => a?.status === 'Under Review' || a?.status === 'Inspection Scheduled').length;
+  const pendingVerificationsCount = (verificationApps || []).filter(a => a?.status === 'Pending Review').length;
   const genericMedicinesCount = (medicines || []).filter(m => m?.isGeneric).length;
   const discrepancyReports = (allFeedbacks || []).filter(f => f?.discrepancyReported);
 
@@ -56,152 +56,93 @@ export const AdminDashboard: React.FC = () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 animate-fade-in">
       
       {/* Admin Executive Header */}
-      <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-lg border border-slate-800">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center font-bold">
-              <ShieldCheck className="w-7 h-7" />
-            </div>
+      <div className="rounded-2xl p-5 overflow-hidden relative"
+        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2027 100%)', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.4)', border: '1px solid rgba(51,65,85,0.6)' }}
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none opacity-10 -mr-20 -mt-20"
+          style={{ background: 'radial-gradient(circle, #14b8a6, transparent)' }} />
 
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center border"
+              style={{ background: 'rgba(20,184,166,0.15)', borderColor: 'rgba(20,184,166,0.3)' }}>
+              <ShieldCheck className="w-6 h-6 text-teal-400" />
+            </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight">
-                  MediCore CDSCO & State FDA Platform Administration
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl font-display font-800 text-white tracking-tight">
+                  CDSCO &amp; State FDA Platform Administration
                 </h1>
-                <span className="text-[10px] bg-teal-950 text-teal-300 font-mono px-2 py-0.5 rounded border border-teal-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-lg border"
+                  style={{ background: 'rgba(20,184,166,0.1)', borderColor: 'rgba(20,184,166,0.3)', color: '#5eead4' }}>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse mr-1" />
                   SYSTEM ACTIVE
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Nashik Central Cluster • Form 20/21 Verification Authority & Bioequivalence Registry
-              </p>
+              <p className="text-xs text-slate-400 mt-0.5">Nashik Central Cluster • Form 20/21 Verification Authority &amp; Bioequivalence Registry</p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2 text-xs">
-            <span className="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700 font-mono">
-              Cluster SLA: 99.4%
-            </span>
-          </div>
+          <span className="text-xs font-mono text-slate-400 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl">Cluster SLA: 99.4%</span>
         </div>
 
-        {/* Top KPIs */}
-        <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-800 text-xs">
-          <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
-            <span className="text-slate-400 block">Verified Pharmacies</span>
-            <p className="text-2xl font-bold text-white mt-1">{verifiedPharmaciesCount} Hubs</p>
-            <span className="text-[10px] text-teal-400">100% Form 20/21 Audited</span>
-          </div>
-
-          <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
-            <span className="text-slate-400 block">Pending Verifications</span>
-            <p className="text-2xl font-bold text-amber-400 mt-1">{pendingVerificationsCount} Nodes</p>
-            <span className="text-[10px] text-amber-300">Awaiting Physical Audit</span>
-          </div>
-
-          <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
-            <span className="text-slate-400 block">CDSCO Formulary</span>
-            <p className="text-2xl font-bold text-teal-300 mt-1">{medicines.length} Medicines</p>
-            <span className="text-[10px] text-slate-400">{genericMedicinesCount} Bioequivalents</span>
-          </div>
-
-          <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
-            <span className="text-slate-400 block">Reported Discrepancies</span>
-            <p className="text-2xl font-bold text-red-400 mt-1">{discrepancyReports.length} Flagged</p>
-            <span className="text-[10px] text-red-300">Customer Price/Stock Flags</span>
-          </div>
+        {/* KPI tiles */}
+        <div className="relative mt-5 pt-4 border-t grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ borderColor: 'rgba(51,65,85,0.6)' }}>
+          {[
+            { label: 'Verified Pharmacies', value: `${verifiedPharmaciesCount} Hubs`, sub: '100% Form 20/21 Audited', color: '#34d399', bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.2)' },
+            { label: 'Pending Verifications', value: `${pendingVerificationsCount} Nodes`, sub: 'Awaiting Physical Audit', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)' },
+            { label: 'CDSCO Formulary', value: `${medicines.length} Items`, sub: `${genericMedicinesCount} Bioequivalents`, color: '#38bdf8', bg: 'rgba(56,189,248,0.1)', border: 'rgba(56,189,248,0.2)' },
+            { label: 'Discrepancy Reports', value: `${discrepancyReports.length} Flagged`, sub: 'Customer Price/Stock Flags', color: '#f87171', bg: 'rgba(248,113,113,0.1)', border: 'rgba(248,113,113,0.2)' },
+          ].map((kpi) => (
+            <div key={kpi.label} className="rounded-xl p-3 border"
+              style={{ background: kpi.bg, borderColor: kpi.border }}>
+              <p className="text-[10px] text-slate-400 font-semibold mb-1">{kpi.label}</p>
+              <p className="text-xl font-display font-800" style={{ color: kpi.color }}>{kpi.value}</p>
+              <p className="text-[10px] mt-0.5" style={{ color: kpi.color, opacity: 0.7 }}>{kpi.sub}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Admin Navigation Tabs */}
-      <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 text-xs font-semibold overflow-x-auto">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'overview'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Activity className="w-3.5 h-3.5" />
-          <span>Dashboard Overview</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('verifications')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'verifications'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Store className="w-3.5 h-3.5" />
-          <span>Pharmacy Verification Pipeline</span>
-          {pendingVerificationsCount > 0 && (
-            <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-900 font-extrabold text-[10px] flex items-center justify-center">
-              {pendingVerificationsCount}
-            </span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab('medicines')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'medicines'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Pill className="w-3.5 h-3.5" />
-          <span>Clinical Medicine Master</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('recommendation-quality')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'recommendation-quality'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-          <span>AI Matching & Bioequivalence Quality</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('reports')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'reports'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <AlertTriangle className="w-3.5 h-3.5" />
-          <span>Discrepancy Reports</span>
-          {discrepancyReports.length > 0 && (
-            <span className="w-4 h-4 rounded-full bg-red-500 text-white font-extrabold text-[10px] flex items-center justify-center">
-              {discrepancyReports.length}
-            </span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab('audit')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'audit'
-              ? 'bg-slate-900 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <FileText className="w-3.5 h-3.5" />
-          <span>Audit Logs ({auditLogs.length})</span>
-        </button>
+      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+        {([
+          { id: 'overview',                label: 'Dashboard Overview',       icon: Activity,       badge: null },
+          { id: 'verifications',           label: 'Verification Pipeline',    icon: Store,          badge: pendingVerificationsCount > 0 ? pendingVerificationsCount : null },
+          { id: 'medicines',               label: 'Medicine Master',          icon: Pill,           badge: null },
+          { id: 'recommendation-quality',  label: 'AI Quality',               icon: Sparkles,       badge: null },
+          { id: 'reports',                 label: 'Discrepancy Reports',      icon: AlertTriangle,  badge: discrepancyReports.length > 0 ? discrepancyReports.length : null },
+          { id: 'audit',                   label: `Audit Logs (${auditLogs.length})`, icon: FileText, badge: null },
+        ] as const).map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+              activeTab === tab.id ? 'text-white shadow-md' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+            style={activeTab === tab.id ? {
+              background: 'linear-gradient(135deg, #1e293b, #0f766e)',
+              boxShadow: '0 2px 8px -2px rgba(15,23,42,0.4)',
+            } : {}}
+          >
+            <tab.icon className="w-3.5 h-3.5 shrink-0" />
+            <span>{tab.label}</span>
+            {tab.badge !== null && (
+              <span className={`min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center ${
+                activeTab === tab.id ? 'bg-white/20 text-white' :
+                tab.id === 'reports' ? 'bg-red-500 text-white' : 'bg-amber-400 text-amber-950'
+              }`}>
+                {tab.badge}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       {/* TAB 1: OVERVIEW */}
+
       {activeTab === 'overview' && (
         <div className="space-y-4 text-xs">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -249,7 +190,7 @@ export const AdminDashboard: React.FC = () => {
                   <div key={app.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                     <div>
                       <p className="font-bold text-slate-900">{app.pharmacyName}</p>
-                      <p className="text-[10px] text-slate-500">License: {app.drugLicenseNumber} • {app.locality}</p>
+                      <p className="text-[10px] text-slate-500">License: {app.form20LicenseNumber} • {app.locality}</p>
                     </div>
 
                     <button
@@ -303,7 +244,7 @@ export const AdminDashboard: React.FC = () => {
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       app.status === 'Approved'
                         ? 'bg-emerald-100 text-emerald-800'
-                        : app.status === 'Under Review'
+                        : app.status === 'Pending Review'
                           ? 'bg-amber-100 text-amber-800'
                           : 'bg-red-100 text-red-800'
                     }`}>
@@ -312,7 +253,7 @@ export const AdminDashboard: React.FC = () => {
                   </div>
 
                   <h3 className="font-bold text-slate-900 text-sm mt-1">{app.pharmacyName}</h3>
-                  <p className="text-slate-500 mt-0.5">{app.locality} • {app.registeredPharmacistName}</p>
+                  <p className="text-slate-500 mt-0.5">{app.locality} • {app.pharmacistName}</p>
                 </div>
               ))}
             </div>
@@ -329,7 +270,7 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     <span className="font-mono text-[11px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">
-                      Submitted: {selectedApp.submittedDate}
+                      Submitted: {selectedApp.submittedAt}
                     </span>
                   </div>
 
@@ -340,26 +281,26 @@ export const AdminDashboard: React.FC = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
                         <span className="text-[10px] text-slate-400 uppercase font-semibold block">Form 20/21 Drug License</span>
-                        <p className="font-mono font-bold text-slate-800 mt-0.5">{selectedApp.drugLicenseNumber}</p>
+                        <p className="font-mono font-bold text-slate-800 mt-0.5">{selectedApp.form20LicenseNumber} / {selectedApp.form21LicenseNumber}</p>
                         <span className="text-[10px] text-emerald-600 block mt-0.5">✓ Uploaded & Digitally Verified</span>
                       </div>
 
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
                         <span className="text-[10px] text-slate-400 uppercase font-semibold block">MSPC Pharmacist</span>
-                        <p className="font-bold text-slate-800 mt-0.5">{selectedApp.registeredPharmacistName}</p>
-                        <span className="font-mono text-[10px] text-slate-500 block">{selectedApp.pharmacistRegistrationNumber}</span>
+                        <p className="font-bold text-slate-800 mt-0.5">{selectedApp.pharmacistName}</p>
+                        <span className="font-mono text-[10px] text-slate-500 block">{selectedApp.pharmacistMspcNumber}</span>
                       </div>
                     </div>
 
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                       <div>
-                        <p className="font-semibold text-slate-800">IoT Refrigerator Cold Storage Available</p>
-                        <p className="text-[11px] text-slate-500">Requires certified 2°C - 8°C sensor installation</p>
+                        <p className="font-semibold text-slate-800">Uploaded Documents Compliance</p>
+                        <p className="text-[11px] text-slate-500">Requires verified Form 20, 21 and Pharmacist Registration</p>
                       </div>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        selectedApp.coldStorageAvailable ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                        selectedApp.documents.every(d => d.verified) ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                       }`}>
-                        {selectedApp.coldStorageAvailable ? 'Compliant' : 'Missing'}
+                        {selectedApp.documents.every(d => d.verified) ? 'Compliant' : 'Pending Documents'}
                       </span>
                     </div>
                   </div>
@@ -564,7 +505,7 @@ export const AdminDashboard: React.FC = () => {
                       <span className="text-slate-600">Order Ref: {report.orderId}</span>
                     </div>
 
-                    <span className="text-[10px] font-mono text-slate-400">{report.createdAt}</span>
+                    <span className="text-[10px] font-mono text-slate-400">{report.timestamp}</span>
                   </div>
 
                   <p className="font-bold text-slate-900 text-xs">
@@ -610,7 +551,7 @@ export const AdminDashboard: React.FC = () => {
                   <th className="p-3">Timestamp</th>
                   <th className="p-3">Action Type</th>
                   <th className="p-3">Actor Role</th>
-                  <th className="p-3">Entity Reference</th>
+                  <th className="p-3">Target Reference</th>
                   <th className="p-3">Audit Details</th>
                 </tr>
               </thead>
@@ -622,15 +563,15 @@ export const AdminDashboard: React.FC = () => {
                     <td className="p-3 font-bold text-slate-900">{log.action}</td>
                     <td className="p-3">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                        log.actorRole === 'ADMIN' ? 'bg-purple-100 text-purple-800' :
-                        log.actorRole === 'PHARMACY' ? 'bg-teal-100 text-teal-800' :
+                        log.actorRole === 'Admin' ? 'bg-purple-100 text-purple-800' :
+                        log.actorRole === 'Pharmacy' ? 'bg-teal-100 text-teal-800' :
                         'bg-slate-100 text-slate-700'
                       }`}>
                         {log.actorRole}
                       </span>
                     </td>
-                    <td className="p-3 text-teal-800">{log.entityId}</td>
-                    <td className="p-3 font-sans text-slate-600">{log.details}</td>
+                    <td className="p-3 text-teal-800">{log.target}</td>
+                    <td className="p-3 font-sans text-slate-600">{log.actorName} {log.metadata ? JSON.stringify(log.metadata) : ''}</td>
                   </tr>
                 ))}
               </tbody>

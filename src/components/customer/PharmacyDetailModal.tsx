@@ -71,7 +71,7 @@ export const PharmacyDetailModal: React.FC<PharmacyDetailModalProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
               <span className="text-[10px] text-slate-400 block font-medium uppercase">License Form 20/21</span>
-              <p className="font-mono font-bold text-slate-800 text-xs mt-0.5">{pharmacy.drugLicenseNumber}</p>
+              <p className="font-mono font-bold text-slate-800 text-xs mt-0.5">{pharmacy.licenseNumberForm20}</p>
               <span className="text-[10px] text-emerald-600 block mt-0.5">Valid till 2028</span>
             </div>
 
@@ -188,7 +188,7 @@ export const PharmacyDetailModal: React.FC<PharmacyDetailModalProps> = ({
                         </div>
                         <span className="font-bold text-slate-800">{rev.customerName}</span>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-mono">{rev.createdAt}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">{rev.timestamp}</span>
                     </div>
 
                     <p className="text-slate-600 mt-1">{rev.comment}</p>
