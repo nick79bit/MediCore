@@ -1,8 +1,28 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 build/
 dist/
+
+# Test coverage
 coverage/
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
-.env*
-!.env.example
+npm-debug.log*
+
+# Environment variables — never commit real .env files
+.env
+.env.local
+.env.production
+!frontend/.env.example
+!backend/.env.example
+
+# Editor
+.vscode/settings.json
+.idea/
